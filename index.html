@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JEJAK ILMU | Audio Kurator</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#F3EBDD;color:#24344D;font-family:Arial,sans-serif;padding:18px}.player{max-width:700px;margin:auto;background:#24344D;border:2px solid #A58A62;border-radius:18px;padding:26px 24px;text-align:center;color:#F3EBDD;box-shadow:0 8px 25px #24344D22}.eyebrow{font-size:11px;letter-spacing:2px;color:#D5B88A;font-weight:bold}.symbol{font-size:32px;margin:4px}h1{font-family:Georgia,serif;font-size:clamp(23px,5vw,36px);margin:13px 0 8px;letter-spacing:1px}.subtitle{font-size:14px;line-height:1.5;margin:0 0 20px;color:#E6DCCC}.line{height:1px;background:#A58A62;margin-bottom:20px}.controls{display:flex;align-items:center;gap:14px}.play{width:48px;height:48px;flex-shrink:0;border:0;border-radius:50%;background:#F3EBDD;color:#24344D;font-size:20px;cursor:pointer}.seek{width:100%;accent-color:#A58A62;cursor:pointer}.times{display:flex;justify-content:space-between;font-size:11px;color:#E6DCCC}.track{flex:1;min-width:0}.status{font-size:12px;color:#D5B88A;min-height:17px;margin-top:15px}button:focus-visible,input:focus-visible{outline:3px solid #D5B88A;outline-offset:3px}
+</style>
+</head>
+<body>
+<section class="player" aria-label="Pemain audio kurator JEJAK ILMU">
+<div class="symbol" aria-hidden="true">♫</div>
+<div class="eyebrow">✦ JEJAK ILMU · AUDIO GUIDE 01 ✦</div>
+<h1>SUARA DARI GALERI</h1>
+<p class="subtitle">Selamat Datang ke JEJAK ILMU<br>Menelusuri sejarah, menerangi masa depan</p>
+<div class="line"></div>
+<div class="controls">
+<button class="play" id="toggle" aria-label="Mainkan audio">▶</button>
+<div class="track"><input class="seek" id="seek" type="range" min="0" max="100" value="0" aria-label="Kedudukan audio"><div class="times"><span id="current">0:00</span><span id="duration">0:00</span></div></div>
+</div>
+<div class="status" id="status" role="status">Tekan ▶ untuk mendengar panduan audio.</div>
+<audio id="audio" preload="metadata" src="kurator.mp3"></audio>
+</section>
+<script>
+const audio=document.getElementById('audio'),toggle=document.getElementById('toggle'),seek=document.getElementById('seek'),current=document.getElementById('current'),duration=document.getElementById('duration'),status=document.getElementById('status');
+function fmt(n){if(!Number.isFinite(n))return '0:00';return Math.floor(n/60)+':'+String(Math.floor(n%60)).padStart(2,'0')}
+toggle.addEventListener('click',async()=>{if(audio.paused){try{await audio.play()}catch(e){status.textContent='Audio belum tersedia. Pastikan fail kurator.mp3 dimuat naik.'}}else audio.pause()});
+audio.addEventListener('play',()=>{toggle.textContent='❚❚';toggle.setAttribute('aria-label','Jeda audio');status.textContent='Audio kurator sedang dimainkan.'});
+audio.addEventListener('pause',()=>{toggle.textContent='▶';toggle.setAttribute('aria-label','Mainkan audio');status.textContent='Audio dijeda. Tekan ▶ untuk sambung.'});
+audio.addEventListener('loadedmetadata',()=>{duration.textContent=fmt(audio.duration)});
+audio.addEventListener('timeupdate',()=>{current.textContent=fmt(audio.currentTime);seek.value=audio.duration?String(audio.currentTime/audio.duration*100):'0'});
+seek.addEventListener('input',()=>{if(audio.duration)audio.currentTime=Number(seek.value)/100*audio.duration});
+audio.addEventListener('ended',()=>{status.textContent='Terima kasih kerana mendengar. Selamat meneroka!'});
+audio.addEventListener('error',()=>{status.textContent='Fail audio belum ditemui. Muat naik kurator.mp3 bersama index.html.'});
+</script>
+</body></html>
